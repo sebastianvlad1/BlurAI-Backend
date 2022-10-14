@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,7 +16,10 @@ namespace BlurAI_Backend.Controllers{
                 Console.WriteLine("filename: " + image.FileName);
                 Console.WriteLine("contenttype: " + image.ContentType);
                 Console.WriteLine("length: " + image.Length);
-                return Ok();
+                MemoryStream destination = new MemoryStream();
+                image.CopyTo(destination);
+                byte[] byteArray = destination.ToArray();
+                return new FileContentResult(byteArray, "application/octet-stream");
             }catch(Exception e){
                 return BadRequest(e.Message);
             }
